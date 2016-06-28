@@ -23,7 +23,7 @@ uses
   dxSkinVisualStudio2013Light, dxSkinVS2010, dxSkinWhiteprint,
   dxSkinXmas2008Blue, Vcl.StdCtrls, Vcl.Mask, Vcl.DBCtrls, cxMaskEdit,
   cxSpinEdit, cxDBEdit, cxTextEdit, ACBrBase, ACBrEnterTab, Vcl.Buttons,
-  Vcl.DBActns, System.Actions, Vcl.ActnList;
+  Vcl.DBActns, System.Actions, Vcl.ActnList, frxClass;
 
 type
   TfrmPrincipal = class(TForm)
@@ -51,11 +51,16 @@ type
     Edit1: TEdit;
     DBLookupComboBox1: TDBLookupComboBox;
     procedure Button1Click(Sender: TObject);
+    procedure DBGrid1TitleClick(Column: TColumn);
+    procedure FormCreate(Sender: TObject);
+    procedure DBGrid1DrawColumnCell(Sender: TObject; const [Ref] Rect: TRect;
+      DataCol: Integer; Column: TColumn; State: TGridDrawState);
 
   private
     { Private declarations }
   public
     { Public declarations }
+    desc: boolean;
   end;
 
 var
@@ -78,6 +83,49 @@ begin
   finally
     frmProduto.Free;
   end;
+end;
+
+procedure TfrmPrincipal.DBGrid1DrawColumnCell(Sender: TObject;
+  const [Ref] Rect: TRect; DataCol: Integer; Column: TColumn;
+  State: TGridDrawState);
+begin
+with DbGrid1 do
+   begin
+    if  dts_cliente.DataSet.State in [dsEdit, dsInsert, dsBrowse] then //Cor da linha selecionada
+        if (Rect.Top = TStringGrid(DBGrid1).CellRect( DataCol ,TStringGrid(DbGrid1).Row).Top)
+          or( gdSelected in State)  then
+         begin
+           Canvas.FillRect(Rect);
+           Canvas.Brush.Color := clblue;
+           DefaultDrawDataCell(Rect,Column.Field,State)
+        end;
+   end;
+end;
+
+procedure TfrmPrincipal.DBGrid1TitleClick(Column: TColumn);
+var
+
+  sort: string;
+  comando: string;
+begin
+  dmConexao.qry_cliente.Close;
+  dmConexao.qry_cliente.sql.Clear;
+
+  if (desc) then
+    sort := 'desc'
+  else
+    sort := 'asc';
+  comando := 'select * from cliente order by ' + Column.FieldName + ' ' + sort;
+  dmConexao.qry_cliente.sql.Add(comando);
+  dmConexao.qry_cliente.Open;
+  dts_cliente.DataSet.Refresh;
+  desc := not desc;
+
+end;
+
+procedure TfrmPrincipal.FormCreate(Sender: TObject);
+begin
+  desc := true;
 end;
 
 end.

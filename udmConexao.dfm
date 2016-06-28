@@ -25,7 +25,7 @@ object dmConexao: TdmConexao
     MaxBlobSize = -1
     Params = <>
     SQL.Strings = (
-      'select * from cliente')
+      'select  * from cliente')
     SQLConnection = conexao
     Left = 112
     Top = 16
