@@ -24,7 +24,7 @@ uses
   dxSkinXmas2008Blue, Vcl.StdCtrls, Vcl.Mask, Vcl.DBCtrls, cxMaskEdit,
   cxSpinEdit, cxDBEdit, cxTextEdit, ACBrBase, ACBrEnterTab, Vcl.Buttons,
   Vcl.DBActns, System.Actions, Vcl.ActnList, frxClass, Vcl.ExtCtrls, frxDBSet,
-  StrUtils;
+  StrUtils, Vcl.PlatformDefaultStyleActnCtrls, Vcl.ActnMan;
 
 type
   TfrmPrincipal = class(TForm)
@@ -32,7 +32,7 @@ type
     DBGrid1: TDBGrid;
     Label1: TLabel;
     Label2: TLabel;
-    DBEdit1: TDBEdit;
+    codprod: TDBEdit;
     entertab: TACBrEnterTab;
     Button1: TButton;
     DBEdit3: TDBEdit;
@@ -44,18 +44,18 @@ type
     excluir: TButton;
     Label4: TLabel;
     dts_cidade: TDataSource;
-    Edit1: TEdit;
     DBLookupComboBox1: TDBLookupComboBox;
     panel: TPanel;
     Panel2: TPanel;
     editar: TButton;
     Panel1: TPanel;
-    frxDBDataset1: TfrxDBDataset;
-    frxReport1: TfrxReport;
+    frxdb: TfrxDBDataset;
+    frxreport: TfrxReport;
     Button3: TButton;
     campo: TComboBox;
     valor: TEdit;
     Button2: TButton;
+    DBEdit1: TDBEdit;
     procedure Button1Click(Sender: TObject);
     procedure DBGrid1TitleClick(Column: TColumn);
     procedure FormCreate(Sender: TObject);
@@ -68,6 +68,9 @@ type
     procedure excluirClick(Sender: TObject);
     procedure Button2Click(Sender: TObject);
     procedure Button3Click(Sender: TObject);
+    procedure FormClose(Sender: TObject; var Action: TCloseAction);
+    procedure Button4Click(Sender: TObject);
+    procedure DBGrid1CellClick(Column: TColumn);
 
   private
     procedure insercao;
@@ -85,7 +88,7 @@ implementation
 
 {$R *.dfm}
 
-uses udmConexao, ufrmProduto;
+uses udmConexao, ufrmProduto, ufrmGrade;
 
 procedure TfrmPrincipal.Button1Click(Sender: TObject);
 begin
@@ -94,7 +97,7 @@ begin
     frmProduto.ShowModal;
     dts_cliente.DataSet.FieldByName('id_produto').AsInteger :=
       frmProduto.codprod;
-    Edit1.Text := frmProduto.descprod;
+    dts_cliente.DataSet.FieldByName('produto').asstring := frmProduto.descprod;
   finally
     frmProduto.Free;
   end;
@@ -115,9 +118,8 @@ begin
     + ' from cliente as cli inner join cidade as ci on ci.id=cli.id_cidade ' +
     'inner join produto as p on p.id=cli.id_produto ';
 
-  case AnsiIndexStr(campo.Items[campo.ItemIndex],
-    ['id', 'descricao', 'produto', 'cidade', 'id_cidade', 'id_produto',
-    'idade']) of
+  case AnsiIndexStr(campo.Items[campo.ItemIndex], ['id', 'descricao', 'produto',
+    'cidade', 'id_cidade', 'id_produto', 'idade']) of
     0:
       opcao := 'cli.id';
     1:
@@ -146,17 +148,35 @@ procedure TfrmPrincipal.Button3Click(Sender: TObject);
 begin
   if not dmConexao.cds_cliente.IsEmpty then
   begin
-    frxDBDataset1.DataSet := dmConexao.cds_cliente;
-    frxReport1.LoadFromFile('cliente.fr3');
-    frxReport1.ShowReport;
+    frxdb.DataSet := dmConexao.cds_cliente;
+    frxreport.LoadFromFile('cliente.fr3');
+    frxreport.ShowReport;
+  end;
+end;
+
+procedure TfrmPrincipal.Button4Click(Sender: TObject);
+begin
+  frmGrade := TfrmGrade.Create(nil);
+  try
+    frmGrade.lista(DBGrid1);
+    frmGrade.ShowModal;
+    DBGrid1 := frmGrade.db2;
+  finally
+    frmGrade.Free;
   end;
 end;
 
 procedure TfrmPrincipal.cancelarClick(Sender: TObject);
 begin
-  dts_cliente.DataSet.cancel;
-  normal;
+  If MessageBox(Handle, 'Deseja cancelar?', 'Favor confirmar...',
+    MB_YESNO + MB_SYSTEMMODAL + MB_ICONQUESTION + MB_DEFBUTTON1) = ID_YES Then
+  begin
+    dts_cliente.DataSet.cancel;
+    normal;
+  end;
 end;
+
+
 
 procedure TfrmPrincipal.DBGrid1DrawColumnCell(Sender: TObject;
   const [Ref] Rect: TRect; DataCol: Integer; Column: TColumn;
@@ -164,15 +184,18 @@ procedure TfrmPrincipal.DBGrid1DrawColumnCell(Sender: TObject;
 begin
   with DBGrid1 do
   begin
-    if dts_cliente.DataSet.State in [dsEdit, dsInsert, dsBrowse] then
-      // Cor da linha selecionada
-      if (Rect.Top = TStringGrid(DBGrid1).CellRect(DataCol,
-        TStringGrid(DBGrid1).Row).Top) or (gdSelected in State) then
-      begin
-        Canvas.FillRect(Rect);
-        Canvas.Brush.Color := clYellow;
-        DefaultDrawDataCell(Rect, Column.Field, State)
-      end;
+    if not dts_cliente.DataSet.IsEmpty then
+    begin
+      if dts_cliente.DataSet.State in [dsEdit, dsInsert, dsBrowse] then
+        // Cor da linha selecionada
+        if (Rect.Top = TStringGrid(DBGrid1).CellRect(DataCol,
+          TStringGrid(DBGrid1).Row).Top) or (gdSelected in State) then
+        begin
+          Canvas.FillRect(Rect);
+          Canvas.Brush.Color := clYellow;
+          DefaultDrawDataCell(Rect, Column.Field, State)
+        end;
+    end;
   end;
 end;
 
@@ -203,15 +226,32 @@ end;
 
 procedure TfrmPrincipal.editarClick(Sender: TObject);
 begin
+  if not dts_cliente.DataSet.IsEmpty then
+  begin
+    dts_cliente.DataSet.Edit;
+  end;
 
-  dts_cliente.DataSet.Edit;
   insercao;
 end;
 
 procedure TfrmPrincipal.excluirClick(Sender: TObject);
 begin
-  dts_cliente.DataSet.delete;
-  normal;
+  If MessageBox(Handle, 'Deseja excluir?', 'Favor confirmar...',
+    MB_YESNO + MB_SYSTEMMODAL + MB_ICONQUESTION + MB_DEFBUTTON1) = ID_YES Then
+  begin
+    if not dts_cliente.DataSet.IsEmpty then
+      dts_cliente.DataSet.delete;
+    normal;
+  end;
+end;
+
+procedure TfrmPrincipal.FormClose(Sender: TObject; var Action: TCloseAction);
+begin
+  If MessageBox(Handle, 'Deseja sair?', 'Favor confirmar...',
+    MB_YESNO + MB_SYSTEMMODAL + MB_ICONQUESTION + MB_DEFBUTTON1) = ID_NO Then
+  begin
+    abort;
+  end;
 end;
 
 procedure TfrmPrincipal.FormCreate(Sender: TObject);
@@ -238,17 +278,21 @@ end;
 
 procedure TfrmPrincipal.salvarClick(Sender: TObject);
 begin
+  If MessageBox(Handle, 'Deseja salvar?', 'Favor confirmar...',
+    MB_YESNO + MB_SYSTEMMODAL + MB_ICONQUESTION + MB_DEFBUTTON1) = ID_YES Then
+  begin
 
-  try
-    dts_cliente.DataSet.post;
-    normal;
-  except
-    on e: exception do
-    begin
-      showmessage('Ocorreu o seguinte erro: ' + e.message);
-      insercao;
+    try
+      dts_cliente.DataSet.post;
+      normal;
+    except
+      on e: exception do
+      begin
+        showmessage('Ocorreu o seguinte erro: ' + e.message);
+        insercao;
+      end;
+
     end;
-
   end;
 end;
 
@@ -260,6 +304,7 @@ begin
   excluir.Enabled := false;
   editar.Enabled := false;
   panel.Enabled := true;
+  descprod.Text := '';
   DBEdit3.SetFocus;
 end;
 

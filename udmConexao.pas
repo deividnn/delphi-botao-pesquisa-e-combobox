@@ -55,28 +55,30 @@ var
 
 implementation
 
-{%CLASSGROUP 'Vcl.Controls.TControl'}
+{ %CLASSGROUP 'Vcl.Controls.TControl' }
 
 {$R *.dfm}
 
 procedure TdmConexao.cds_clienteAfterDelete(DataSet: TDataSet);
 begin
-dmConexao.cds_cliente.ApplyUpdates(0);
+  dmConexao.cds_cliente.ApplyUpdates(0);
 end;
 
 procedure TdmConexao.cds_clienteAfterPost(DataSet: TDataSet);
 begin
-dmConexao.cds_cliente.ApplyUpdates(0);
+  dmConexao.cds_cliente.ApplyUpdates(0);
+  dmConexao.cds_cliente.Refresh;
 end;
 
 procedure TdmConexao.cds_produtoAfterDelete(DataSet: TDataSet);
 begin
-dmConexao.cds_produto.ApplyUpdates(0) ;
+  dmConexao.cds_produto.ApplyUpdates(0);
 end;
 
 procedure TdmConexao.cds_produtoAfterPost(DataSet: TDataSet);
 begin
-dmConexao.cds_produto.ApplyUpdates(0) ;
+  dmConexao.cds_produto.ApplyUpdates(0);
+  dmConexao.cds_produto.refresh;
 end;
 
 end.

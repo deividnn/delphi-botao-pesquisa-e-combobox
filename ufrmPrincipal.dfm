@@ -13,6 +13,7 @@ object frmPrincipal: TfrmPrincipal
   OldCreateOrder = False
   Position = poDesktopCenter
   WindowState = wsMaximized
+  OnClose = FormClose
   OnCreate = FormCreate
   PixelsPerInch = 96
   TextHeight = 13
@@ -59,10 +60,10 @@ object frmPrincipal: TfrmPrincipal
       Width = 42
       Height = 25
       Caption = '...'
-      TabOrder = 5
+      TabOrder = 4
       OnClick = Button1Click
     end
-    object DBEdit1: TDBEdit
+    object codprod: TDBEdit
       Left = 20
       Top = 72
       Width = 57
@@ -79,7 +80,7 @@ object frmPrincipal: TfrmPrincipal
       Height = 21
       DataField = 'descricao'
       DataSource = dts_cliente
-      TabOrder = 3
+      TabOrder = 2
     end
     object DBEdit4: TDBEdit
       Left = 466
@@ -88,7 +89,7 @@ object frmPrincipal: TfrmPrincipal
       Height = 21
       DataField = 'idade'
       DataSource = dts_cliente
-      TabOrder = 4
+      TabOrder = 3
     end
     object DBLookupComboBox1: TDBLookupComboBox
       Left = 19
@@ -102,13 +103,15 @@ object frmPrincipal: TfrmPrincipal
       ListSource = dts_cidade
       TabOrder = 1
     end
-    object Edit1: TEdit
+    object DBEdit1: TDBEdit
       Left = 131
       Top = 72
       Width = 401
       Height = 21
+      DataField = 'produto'
+      DataSource = dts_cliente
       Enabled = False
-      TabOrder = 2
+      TabOrder = 5
     end
   end
   object Panel2: TPanel
@@ -118,14 +121,14 @@ object frmPrincipal: TfrmPrincipal
     Height = 57
     Align = alTop
     TabOrder = 1
+    ExplicitLeft = 8
+    ExplicitTop = 2
     object inserir: TButton
       Left = 8
       Top = 16
       Width = 75
       Height = 25
-      Hint = 'Insert'
       Caption = 'Inserir'
-      ImageIndex = 4
       TabOrder = 0
       OnClick = inserirClick
     end
@@ -172,7 +175,7 @@ object frmPrincipal: TfrmPrincipal
       OnClick = editarClick
     end
     object Button3: TButton
-      Left = 494
+      Left = 686
       Top = 16
       Width = 75
       Height = 25
@@ -196,12 +199,14 @@ object frmPrincipal: TfrmPrincipal
       Height = 275
       Align = alBottom
       DataSource = dts_cliente
+      Options = [dgTitles, dgIndicator, dgColumnResize, dgColLines, dgRowLines, dgTabs, dgConfirmDelete, dgCancelOnExit, dgTitleClick, dgTitleHotTrack]
       TabOrder = 0
       TitleFont.Charset = DEFAULT_CHARSET
       TitleFont.Color = clWindowText
       TitleFont.Height = -11
       TitleFont.Name = 'Tahoma'
       TitleFont.Style = []
+      OnCellClick = DBGrid1CellClick
       OnDrawColumnCell = DBGrid1DrawColumnCell
       OnTitleClick = DBGrid1TitleClick
     end
@@ -231,27 +236,27 @@ object frmPrincipal: TfrmPrincipal
   end
   object dts_cliente: TDataSource
     DataSet = dmConexao.cds_cliente
-    Left = 728
-    Top = 16
+    Left = 736
+    Top = 136
   end
   object entertab: TACBrEnterTab
     EnterAsTab = True
-    Left = 616
-    Top = 16
+    Left = 728
+    Top = 72
   end
   object dts_cidade: TDataSource
     DataSet = dmConexao.cds_cidade
-    Left = 672
-    Top = 16
+    Left = 680
+    Top = 136
   end
-  object frxDBDataset1: TfrxDBDataset
+  object frxdb: TfrxDBDataset
     UserName = 'frxDBDataset1'
     CloseDataSource = False
     BCDToCurrency = False
     Left = 616
     Top = 72
   end
-  object frxReport1: TfrxReport
+  object frxreport: TfrxReport
     Version = '5.1.5'
     DotMatrixReport = False
     IniFile = '\Software\Fast Reports'
@@ -271,7 +276,7 @@ object frmPrincipal: TfrmPrincipal
     Top = 73
     Datasets = <
       item
-        DataSet = frxDBDataset1
+        DataSet = frxdb
         DataSetName = 'frxDBDataset1'
       end>
     Variables = <>
@@ -333,14 +338,14 @@ object frmPrincipal: TfrmPrincipal
         Height = 18.897650000000000000
         Top = 102.047310000000000000
         Width = 718.110700000000000000
-        DataSet = frxDBDataset1
+        DataSet = frxdb
         DataSetName = 'frxDBDataset1'
         RowCount = 0
         object frxDBDataset1frxDBDataset1: TfrxMemoView
           Width = 94.488250000000000000
           Height = 18.897650000000000000
           DataField = 'id'
-          DataSet = frxDBDataset1
+          DataSet = frxdb
           DataSetName = 'frxDBDataset1'
           Memo.UTF8W = (
             '[frxDBDataset1."id"]')
@@ -350,7 +355,7 @@ object frmPrincipal: TfrmPrincipal
           Width = 200.315090000000000000
           Height = 18.897650000000000000
           DataField = 'descricao'
-          DataSet = frxDBDataset1
+          DataSet = frxdb
           DataSetName = 'frxDBDataset1'
           Memo.UTF8W = (
             '[frxDBDataset1."descricao"]')
@@ -360,7 +365,7 @@ object frmPrincipal: TfrmPrincipal
           Width = 79.370130000000000000
           Height = 18.897650000000000000
           DataField = 'idade'
-          DataSet = frxDBDataset1
+          DataSet = frxdb
           DataSetName = 'frxDBDataset1'
           Memo.UTF8W = (
             '[frxDBDataset1."idade"]')
@@ -370,7 +375,7 @@ object frmPrincipal: TfrmPrincipal
           Width = 188.976500000000000000
           Height = 18.897650000000000000
           DataField = 'produto'
-          DataSet = frxDBDataset1
+          DataSet = frxdb
           DataSetName = 'frxDBDataset1'
           Memo.UTF8W = (
             '[frxDBDataset1."produto"]')
@@ -380,7 +385,7 @@ object frmPrincipal: TfrmPrincipal
           Width = 151.181200000000000000
           Height = 18.897650000000000000
           DataField = 'cidade'
-          DataSet = frxDBDataset1
+          DataSet = frxdb
           DataSetName = 'frxDBDataset1'
           Memo.UTF8W = (
             '[frxDBDataset1."cidade"]')
