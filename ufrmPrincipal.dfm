@@ -20,15 +20,11 @@ object frmPrincipal: TfrmPrincipal
     Left = 0
     Top = 57
     Width = 772
-    Height = 166
+    Height = 140
     Align = alClient
     Color = clGradientActiveCaption
     ParentBackground = False
     TabOrder = 0
-    ExplicitLeft = 8
-    ExplicitTop = 63
-    ExplicitWidth = 756
-    ExplicitHeight = 154
     object Label1: TLabel
       Left = 19
       Top = 8
@@ -187,18 +183,18 @@ object frmPrincipal: TfrmPrincipal
   end
   object Panel1: TPanel
     Left = 0
-    Top = 223
+    Top = 197
     Width = 772
-    Height = 306
+    Height = 332
     Align = alBottom
     Caption = 'Panel1'
     TabOrder = 2
     object DBGrid1: TDBGrid
       Left = 1
-      Top = 1
+      Top = 56
       Width = 770
-      Height = 304
-      Align = alClient
+      Height = 275
+      Align = alBottom
       DataSource = dts_cliente
       TabOrder = 0
       TitleFont.Charset = DEFAULT_CHARSET
@@ -208,6 +204,29 @@ object frmPrincipal: TfrmPrincipal
       TitleFont.Style = []
       OnDrawColumnCell = DBGrid1DrawColumnCell
       OnTitleClick = DBGrid1TitleClick
+    end
+    object valor: TEdit
+      Left = 170
+      Top = 18
+      Width = 380
+      Height = 21
+      TabOrder = 1
+    end
+    object campo: TComboBox
+      Left = 19
+      Top = 18
+      Width = 145
+      Height = 21
+      TabOrder = 2
+    end
+    object Button2: TButton
+      Left = 556
+      Top = 18
+      Width = 87
+      Height = 21
+      Caption = 'Pesquisar'
+      TabOrder = 3
+      OnClick = Button2Click
     end
   end
   object dts_cliente: TDataSource

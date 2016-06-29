@@ -14,7 +14,7 @@ begin
   Application.Initialize;
   Application.MainFormOnTaskbar := True;
   TStyleManager.TrySetStyle('Sky');
-  Application.CreateForm(TfrmPrincipal, frmPrincipal);
   Application.CreateForm(TdmConexao, dmConexao);
+  Application.CreateForm(TfrmPrincipal, frmPrincipal);
   Application.Run;
 end.

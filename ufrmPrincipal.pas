@@ -23,7 +23,8 @@ uses
   dxSkinVisualStudio2013Light, dxSkinVS2010, dxSkinWhiteprint,
   dxSkinXmas2008Blue, Vcl.StdCtrls, Vcl.Mask, Vcl.DBCtrls, cxMaskEdit,
   cxSpinEdit, cxDBEdit, cxTextEdit, ACBrBase, ACBrEnterTab, Vcl.Buttons,
-  Vcl.DBActns, System.Actions, Vcl.ActnList, frxClass, Vcl.ExtCtrls, frxDBSet;
+  Vcl.DBActns, System.Actions, Vcl.ActnList, frxClass, Vcl.ExtCtrls, frxDBSet,
+  StrUtils;
 
 type
   TfrmPrincipal = class(TForm)
@@ -52,6 +53,9 @@ type
     frxDBDataset1: TfrxDBDataset;
     frxReport1: TfrxReport;
     Button3: TButton;
+    campo: TComboBox;
+    valor: TEdit;
+    Button2: TButton;
     procedure Button1Click(Sender: TObject);
     procedure DBGrid1TitleClick(Column: TColumn);
     procedure FormCreate(Sender: TObject);
@@ -97,7 +101,44 @@ begin
 end;
 
 procedure TfrmPrincipal.Button2Click(Sender: TObject);
+var
+  sql: string;
+  comando: string;
+  opcao: string;
+
 begin
+  dmConexao.qry_cliente.Close;
+  dmConexao.qry_cliente.sql.Clear;
+
+  sql := 'select cli.id as id,cli.descricao as descricao,cli.id_produto as id_produto,'
+    + 'cli.id_cidade as id_cidade,cli.idade as idade,ci.nome as cidade ,p.descricao as produto'
+    + ' from cliente as cli inner join cidade as ci on ci.id=cli.id_cidade ' +
+    'inner join produto as p on p.id=cli.id_produto ';
+
+  case AnsiIndexStr(campo.Items[campo.ItemIndex],
+    ['id', 'descricao', 'produto', 'cidade', 'id_cidade', 'id_produto',
+    'idade']) of
+    0:
+      opcao := 'cli.id';
+    1:
+      opcao := 'cli.descricao';
+    2:
+      opcao := 'p.descricao';
+    3:
+      opcao := 'ci.nome';
+    4:
+      opcao := 'ci.id';
+    5:
+      opcao := 'p.id';
+    6:
+      opcao := 'cli.idade';
+  end;
+
+  comando := sql + ' where ' + opcao + ' like  "%' + valor.Text + '%" order by '
+    + opcao + ' asc';
+
+  dmConexao.qry_cliente.sql.Add(comando);
+  dmConexao.qry_cliente.Open;
   dts_cliente.DataSet.Refresh;
 end;
 
@@ -148,7 +189,7 @@ begin
     sort := 'desc'
   else
     sort := 'asc';
-  sql := 'select cli. id as id,cli.descricao as descricao,cli.id_produto as id_produto,'
+  sql := 'select cli.id as id,cli.descricao as descricao,cli.id_produto as id_produto,'
     + 'cli.id_cidade as id_cidade,cli.idade as idade,ci.nome as cidade ,p.descricao as produto'
     + ' from cliente as cli inner join cidade as ci on ci.id=cli.id_cidade ' +
     'inner join produto as p on p.id=cli.id_produto ';
@@ -174,9 +215,19 @@ begin
 end;
 
 procedure TfrmPrincipal.FormCreate(Sender: TObject);
+var
+  I: Integer;
 begin
   desc := true;
   normal;
+
+  for I := 0 to dts_cliente.DataSet.FieldCount - 1 do
+  begin
+    campo.Items.Add(dts_cliente.DataSet.FieldDefList.FieldDefs[I].name);
+  end;
+
+  campo.ItemIndex := 1;
+
 end;
 
 procedure TfrmPrincipal.inserirClick(Sender: TObject);

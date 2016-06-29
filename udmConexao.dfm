@@ -25,12 +25,15 @@ object dmConexao: TdmConexao
     MaxBlobSize = -1
     Params = <>
     SQL.Strings = (
-      
-        'select cli. id as id,cli.descricao as descricao,cli.id_produto a' +
-        's id_produto,'
-      
-        'cli.id_cidade as id_cidade,cli.idade as idade,ci.nome as cidade ' +
-        ',p.descricao as produto from cliente as cli'
+      'select cli. id as id,'
+      'cli.descricao as "descricao",'
+      'cli.id_produto as id_produto,'
+      'cli.id_cidade as id_cidade,'
+      'cli.idade as idade,'
+      'ci.nome as cidade ,'
+      'p.descricao as "produto" '
+      ''
+      'from cliente as cli'
       
         'inner join cidade as ci on ci.id=cli.id_cidade inner join produt' +
         'o as p '
@@ -40,6 +43,7 @@ object dmConexao: TdmConexao
     Top = 16
     object qry_clienteid: TIntegerField
       FieldName = 'id'
+      ProviderFlags = [pfInUpdate, pfInWhere, pfInKey]
     end
     object qry_clientedescricao: TStringField
       FieldName = 'descricao'
@@ -55,6 +59,7 @@ object dmConexao: TdmConexao
     end
     object qry_clientecidade: TStringField
       FieldName = 'cidade'
+      ProviderFlags = []
       Size = 50
     end
     object qry_clienteid_produto: TIntegerField
@@ -63,11 +68,14 @@ object dmConexao: TdmConexao
     end
     object qry_clienteproduto: TStringField
       FieldName = 'produto'
+      ProviderFlags = []
       Size = 100
     end
   end
   object dsp_cliente: TDataSetProvider
     DataSet = qry_cliente
+    Options = [poIncFieldProps, poAutoRefresh, poPropogateChanges, poAllowCommandText, poUseQuoteChar]
+    UpdateMode = upWhereKeyOnly
     Left = 208
     Top = 16
   end
@@ -82,6 +90,7 @@ object dmConexao: TdmConexao
     Top = 16
     object cds_clienteid: TIntegerField
       FieldName = 'id'
+      ProviderFlags = [pfInUpdate, pfInWhere, pfInKey]
     end
     object cds_clientedescricao: TStringField
       FieldName = 'descricao'
@@ -97,6 +106,7 @@ object dmConexao: TdmConexao
     end
     object cds_clientecidade: TStringField
       FieldName = 'cidade'
+      ProviderFlags = []
       Size = 50
     end
     object cds_clienteid_produto: TIntegerField
@@ -105,6 +115,7 @@ object dmConexao: TdmConexao
     end
     object cds_clienteproduto: TStringField
       FieldName = 'produto'
+      ProviderFlags = []
       Size = 100
     end
   end
