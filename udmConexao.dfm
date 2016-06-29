@@ -5,6 +5,7 @@ object dmConexao: TdmConexao
   object conexao: TSQLConnection
     ConnectionName = 'Devart MySQL Direct'
     DriverName = 'DevartMySQLDirect'
+    KeepConnection = False
     LoginPrompt = False
     Params.Strings = (
       'BlobSize=-1'
@@ -16,12 +17,10 @@ object dmConexao: TdmConexao
       'FetchAll=True'
       'EnableBoolean=False'
       'IPVersion=IPv4')
-    Connected = True
     Left = 32
     Top = 16
   end
   object qry_cliente: TSQLQuery
-    Active = True
     MaxBlobSize = -1
     Params = <>
     SQL.Strings = (
@@ -80,7 +79,6 @@ object dmConexao: TdmConexao
     Top = 16
   end
   object cds_cliente: TClientDataSet
-    Active = True
     Aggregates = <>
     Params = <>
     ProviderName = 'dsp_cliente'
@@ -142,7 +140,6 @@ object dmConexao: TdmConexao
     Top = 88
   end
   object cds_produto: TClientDataSet
-    Active = True
     Aggregates = <>
     Params = <>
     ProviderName = 'dsp_produto'
@@ -178,15 +175,16 @@ object dmConexao: TdmConexao
   end
   object dsp_cidade: TDataSetProvider
     DataSet = qry_cidade
-    Left = 200
-    Top = 176
+    Constraints = False
+    Left = 208
+    Top = 184
   end
   object cds_cidade: TClientDataSet
     Active = True
     Aggregates = <>
     Params = <>
     ProviderName = 'dsp_cidade'
-    Left = 320
+    Left = 328
     Top = 176
     object cds_cidadeid: TIntegerField
       FieldName = 'id'

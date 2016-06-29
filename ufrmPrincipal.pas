@@ -70,7 +70,6 @@ type
     procedure Button3Click(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure Button4Click(Sender: TObject);
-    procedure DBGrid1CellClick(Column: TColumn);
 
   private
     procedure insercao;
@@ -176,8 +175,6 @@ begin
   end;
 end;
 
-
-
 procedure TfrmPrincipal.DBGrid1DrawColumnCell(Sender: TObject;
   const [Ref] Rect: TRect; DataCol: Integer; Column: TColumn;
   State: TGridDrawState);
@@ -258,6 +255,12 @@ procedure TfrmPrincipal.FormCreate(Sender: TObject);
 var
   I: Integer;
 begin
+
+  dmConexao.conexao.Open;
+  dmConexao.cds_cliente.Open;
+  dmConexao.cds_produto.Open;
+  dmConexao.cds_cidade.Open;
+
   desc := true;
   normal;
 
@@ -304,7 +307,6 @@ begin
   excluir.Enabled := false;
   editar.Enabled := false;
   panel.Enabled := true;
-  descprod.Text := '';
   DBEdit3.SetFocus;
 end;
 
