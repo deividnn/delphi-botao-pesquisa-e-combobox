@@ -25,7 +25,16 @@ object dmConexao: TdmConexao
     MaxBlobSize = -1
     Params = <>
     SQL.Strings = (
-      'select  * from cliente')
+      
+        'select cli. id as id,cli.descricao as descricao,cli.id_produto a' +
+        's id_produto,'
+      
+        'cli.id_cidade as id_cidade,cli.idade as idade,ci.nome as cidade ' +
+        ',p.descricao as produto from cliente as cli'
+      
+        'inner join cidade as ci on ci.id=cli.id_cidade inner join produt' +
+        'o as p '
+      ' on p.id=cli.id_produto')
     SQLConnection = conexao
     Left = 112
     Top = 16
@@ -41,12 +50,20 @@ object dmConexao: TdmConexao
       FieldName = 'idade'
       Required = True
     end
+    object qry_clienteid_cidade: TIntegerField
+      FieldName = 'id_cidade'
+    end
+    object qry_clientecidade: TStringField
+      FieldName = 'cidade'
+      Size = 50
+    end
     object qry_clienteid_produto: TIntegerField
       FieldName = 'id_produto'
       Required = True
     end
-    object qry_clienteid_cidade: TIntegerField
-      FieldName = 'id_cidade'
+    object qry_clienteproduto: TStringField
+      FieldName = 'produto'
+      Size = 100
     end
   end
   object dsp_cliente: TDataSetProvider
@@ -75,12 +92,20 @@ object dmConexao: TdmConexao
       FieldName = 'idade'
       Required = True
     end
+    object cds_clienteid_cidade: TIntegerField
+      FieldName = 'id_cidade'
+    end
+    object cds_clientecidade: TStringField
+      FieldName = 'cidade'
+      Size = 50
+    end
     object cds_clienteid_produto: TIntegerField
       FieldName = 'id_produto'
       Required = True
     end
-    object cds_clienteid_cidade: TIntegerField
-      FieldName = 'id_cidade'
+    object cds_clienteproduto: TStringField
+      FieldName = 'produto'
+      Size = 100
     end
   end
   object qry_produto: TSQLQuery

@@ -36,6 +36,10 @@ type
     qry_cidadenome: TStringField;
     qry_clienteid_cidade: TIntegerField;
     cds_clienteid_cidade: TIntegerField;
+    qry_clientecidade: TStringField;
+    qry_clienteproduto: TStringField;
+    cds_clientecidade: TStringField;
+    cds_clienteproduto: TStringField;
     procedure cds_produtoAfterDelete(DataSet: TDataSet);
     procedure cds_produtoAfterPost(DataSet: TDataSet);
     procedure cds_clienteAfterDelete(DataSet: TDataSet);
